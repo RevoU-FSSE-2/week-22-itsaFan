@@ -1,15 +1,19 @@
-from flask import Flask
-from pymongo import MongoClient
-from config import Config
+from dotenv import load_dotenv
+load_dotenv()
 
+from flask import Flask
+from config import Config
+from extensions import bcrypt
+from db_config import db, mongo_client 
+from utils.seeding import seed_permissions
+from routes.auth_routes import auth_bp
 
 app = Flask(__name__)
-
+# Utils
+bcrypt.init_app(app) 
 app.config.from_object(Config)
-mongo_client = MongoClient(app.config['MONGO_URI'])
-db = mongo_client.revou_week22
 
-
+seed_permissions(db)
 def check_mongo_connection():
     try:
         mongo_client.admin.command('ping')
@@ -19,3 +23,7 @@ def check_mongo_connection():
         exit(1)
 
 check_mongo_connection()
+
+
+# Routes
+app.register_blueprint(auth_bp, url_prefix='/api')
