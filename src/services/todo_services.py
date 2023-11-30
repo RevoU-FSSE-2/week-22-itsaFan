@@ -9,7 +9,7 @@ def create_todo(title, description, priority, deadline, created_by):
         "title": title,
         "description": description or "",
         "priority": priority or "notSet",
-        "deadline": datetime.datetime.strptime(deadline, '%Y-%m-%d') if deadline else None,
+        "deadline": deadline,
         "createdOn": datetime.datetime.utcnow(),
         "createdBy": ObjectId(created_by) 
     }

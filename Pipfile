@@ -12,6 +12,7 @@ python-dotenv = "*"
 pymongo = "*"
 flask-caching = "*"
 flask-cors = "*"
+flask-talisman = "*"
 
 [dev-packages]
 

@@ -52,7 +52,7 @@ def view_all_todos():
             return jsonify({"message": "Unauthorized, admin access required"}), 403
 
         todos = get_all_todos()
-        return jsonify(todos), 200
+        return jsonify({"message": "All Todos", "todos": todos}), 200
 
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 401

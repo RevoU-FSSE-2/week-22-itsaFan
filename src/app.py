@@ -6,14 +6,17 @@ from config import Config
 from extensions import bcrypt
 from db_config import db, mongo_client 
 from utils.seeding import seed_permissions
+from flask_talisman import Talisman
 from flask_cors import CORS
 # Routing
 from routes.auth_routes import auth_bp
 from routes.todo_routes import todo_bp
 
 app = Flask(__name__)
+
 # Utils
-CORS(app) 
+CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://localhost:5173"}}, methods=["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"])
+Talisman(app, force_https=False)
 bcrypt.init_app(app) 
 app.config.from_object(Config)
 
