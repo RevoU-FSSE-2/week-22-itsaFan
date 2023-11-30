@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from db_config import db  
-from services.todo_services import create_todo, get_todo_by_creator, get_all_todos, search_todos
+from services.todo_services import create_todo, get_todo_by_creator, get_all_todos, search_todos, get_todo_by_id, delete_todo
 from services.user_services import get_current_user, is_user_authorized
 
 
@@ -73,6 +73,35 @@ def search_todos_route():
 
         todos = search_todos(query, user_role, user_id)
         return jsonify({"message": "search result:", "todos": todos}), 200
+
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@todo_bp.route('/delete/<string:todo_id>', methods=['DELETE'])
+def delete_todo_route(todo_id):
+    try:
+        current_user = get_current_user()
+        if not current_user:
+            return jsonify({"message": "Unauthorized"}), 401
+
+        user_id = current_user.get('userId')
+        user_role = current_user.get('role')
+
+        todo = get_todo_by_id(todo_id)
+        if not todo:
+            return jsonify({"message": "Todo not found"}), 404
+
+        if str(todo['createdBy']) != user_id and user_role != "ROLE_ADMIN":
+            return jsonify({"message": "Only the creator or admin can delete it"}), 403
+
+        deleted_count = delete_todo(todo_id)
+        if deleted_count == 0:
+            return jsonify({"message": "Todo not found"}), 404
+
+        return jsonify({"message": "Todo deleted successfully"}), 200
 
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 401
