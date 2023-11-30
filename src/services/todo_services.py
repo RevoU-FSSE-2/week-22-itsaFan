@@ -11,10 +11,32 @@ def create_todo(title, description, priority, deadline, created_by):
         "createdOn": datetime.datetime.utcnow(),
         "createdBy": ObjectId(created_by) 
     }
-    return db.todos.insert_one(todo).inserted_id
+    todo_id = db.todos.insert_one(todo).inserted_id
+    inserted_todo = db.todos.find_one({"_id": todo_id})
+    inserted_todo['_id'] = str(inserted_todo['_id'])
+    inserted_todo['createdBy'] = str(inserted_todo['createdBy'])
+
+    return inserted_todo
 
 def get_todo_by_creator(created_by):
-    return list(db.todos.find({"createdBy": ObjectId(created_by)}))
+    todos = db.todos.find({"createdBy": ObjectId(created_by)})
+
+    enhanced_todos = []
+    for todo in todos:
+        user = db.users.find_one({"_id": todo['createdBy']})
+
+        user_data = {
+            '_id': str(user['_id']),
+            'username': user['username'],
+            'email': user['email']
+        }
+
+        enhanced_todo = {**todo, '_id': str(todo['_id']), 'createdBy': user_data}
+        enhanced_todos.append(enhanced_todo)
+
+    return enhanced_todos
+
+
 
 def get_all_todos():
     return list(db.todos.find({}))

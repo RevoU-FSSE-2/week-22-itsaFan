@@ -5,6 +5,8 @@ from utils.validation import validate_password
 import jwt
 import datetime
 from config import Config
+from flask import request
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 def create_user(db, username, email, password, default_role='ROLE_USER'):
     
@@ -39,3 +41,17 @@ def create_refresh_token(data, expires_delta):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, Config.REFRESH_SECRET, algorithm="HS256")
     return encoded_jwt
+
+def get_current_user():
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return None
+
+    token = auth_header.split(" ")[1]
+    try:
+        payload = jwt.decode(token, Config.ACCESS_SECRET, algorithms=["HS256"])
+        return payload
+    except ExpiredSignatureError:
+        raise ValueError('Token has expired')
+    except InvalidTokenError:
+        raise ValueError('Invalid token')

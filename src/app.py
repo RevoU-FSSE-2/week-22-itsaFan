@@ -6,7 +6,9 @@ from config import Config
 from extensions import bcrypt
 from db_config import db, mongo_client 
 from utils.seeding import seed_permissions
+# Routing
 from routes.auth_routes import auth_bp
+from routes.todo_routes import todo_bp
 
 app = Flask(__name__)
 # Utils
@@ -27,3 +29,4 @@ check_mongo_connection()
 
 # Routes
 app.register_blueprint(auth_bp, url_prefix='/api')
+app.register_blueprint(todo_bp, url_prefix='/api/todo')
