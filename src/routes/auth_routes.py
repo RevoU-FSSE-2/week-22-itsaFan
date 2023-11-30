@@ -1,6 +1,9 @@
-from flask import Blueprint, request, jsonify
-from app import db
-from services.user_services import create_user
+from flask import Blueprint, request, jsonify, make_response
+from extensions import bcrypt
+from db_config import db
+from services.user_services import create_user, find_user_by_username, create_access_token, create_refresh_token
+import datetime
+from helpers.permission_helpers import get_role_name
 
 auth_bp = Blueprint('auth_bp', __name__)
 
@@ -16,3 +19,26 @@ def register():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
+
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    user = find_user_by_username(db, username)
+
+    if user and bcrypt.check_password_hash(user['password'], password):
+        role_name = get_role_name(db, user['role']) 
+        user_data = {
+            "userId": str(user['_id']),
+            "username": user['username'],
+            "email": user['email'],
+            "role": role_name
+        }
+        access_token = create_access_token(user_data, datetime.timedelta(minutes=30))
+        refresh_token = create_refresh_token(user_data, datetime.timedelta(days=7))
+
+        response = make_response(jsonify(access_token=access_token))
+        response.set_cookie('refresh_token', refresh_token, max_age=7*24*60*60, httponly=True)
+        return response
+
+    return jsonify({"msg": "Invalid username or password"}), 401

@@ -2,6 +2,9 @@ from helpers.user_helpers import make_user
 from extensions import bcrypt
 from helpers.permission_helpers import get_role_id
 from utils.validation import validate_password
+import jwt
+import datetime
+from config import Config
 
 def create_user(db, username, email, password, default_role='ROLE_USER'):
     
@@ -22,3 +25,17 @@ def find_user_by_username(db, username):
 
 def find_user_by_email(db, email):
     return db.users.find_one({"email": email})
+
+def create_access_token(data, expires_delta):
+    to_encode = data.copy()
+    expire = datetime.datetime.utcnow() + expires_delta
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, Config.ACCESS_SECRET, algorithm="HS256")
+    return encoded_jwt
+
+def create_refresh_token(data, expires_delta):
+    to_encode = data.copy()
+    expire = datetime.datetime.utcnow() + expires_delta
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, Config.REFRESH_SECRET, algorithm="HS256")
+    return encoded_jwt
