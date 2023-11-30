@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db_config import db  
-from services.todo_services import create_todo, get_todo_by_creator
-from services.user_services import get_current_user
+from services.todo_services import create_todo, get_todo_by_creator, get_all_todos
+from services.user_services import get_current_user, is_user_authorized
 
 todo_bp = Blueprint('todo_bp', __name__)
 
@@ -34,7 +34,21 @@ def view_my_todos():
 
         user_id = current_user['userId']
         my_todos = get_todo_by_creator(user_id)
-        return jsonify(my_todos), 200
+        return jsonify({"message": "Todo List", "todos": my_todos}), 200
+
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@todo_bp.route('/all', methods=['GET'])
+def view_all_todos():
+    try:
+        if not is_user_authorized():
+            return jsonify({"message": "Unauthorized, admin access required"}), 403
+
+        todos = get_all_todos()
+        return jsonify(todos), 200
 
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 401

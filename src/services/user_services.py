@@ -55,3 +55,10 @@ def get_current_user():
         raise ValueError('Token has expired')
     except InvalidTokenError:
         raise ValueError('Invalid token')
+    
+def is_user_authorized():
+    current_user = get_current_user()
+    if not current_user:
+        return False
+
+    return current_user.get('role') == 'ROLE_ADMIN'

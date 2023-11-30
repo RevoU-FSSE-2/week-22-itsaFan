@@ -39,7 +39,19 @@ def get_todo_by_creator(created_by):
 
 
 def get_all_todos():
-    return list(db.todos.find({}))
+    todos = db.todos.find({})
+    enhanced_todos = []
+    for todo in todos:
+        user = db.users.find_one({"_id": todo['createdBy']})
+        user_data = {
+            '_id': str(user['_id']),
+            'username': user['username'],
+            'email': user['email']
+        }
+        enhanced_todo = {**todo, '_id': str(todo['_id']), 'createdBy': user_data}
+        enhanced_todos.append(enhanced_todo)
+    return enhanced_todos
+
 
 def get_todo_by_id(todo_id):
     return db.todos.find_one({"_id": ObjectId(todo_id)})
