@@ -1,5 +1,7 @@
+import json
 from db_config import db
-from bson import ObjectId  
+from bson import ObjectId, Regex
+from bson.json_util import dumps  
 import datetime
 
 def create_todo(title, description, priority, deadline, created_by):
@@ -17,6 +19,7 @@ def create_todo(title, description, priority, deadline, created_by):
     inserted_todo['createdBy'] = str(inserted_todo['createdBy'])
 
     return inserted_todo
+
 
 def get_todo_by_creator(created_by):
     todos = db.todos.find({"createdBy": ObjectId(created_by)})
@@ -63,10 +66,24 @@ def update_todo(todo_id, new_todo_data):
     updated_data = {k: v for k, v in new_todo_data.items() if v is not None}  
     return db.todos.update_one({"_id": ObjectId(todo_id)}, {"$set": updated_data}).modified_count
 
+
+
 def search_todos(query, user_role, user_id):
-    search_criteria = {}
     if user_role == "ROLE_ADMIN":
-        search_criteria = {"title": {"$regex": query, "$options": "i"}}
-    elif user_role == "ROLE_USER":
-        search_criteria = {"$and": [{"title": {"$regex": query, "$options": "i"}}, {"createdBy": ObjectId(user_id)}]}
-    return list(db.todos.find(search_criteria))
+        user_ids = [user['_id'] for user in db.users.find({"username": Regex(query, "i")})]
+
+        todos = db.todos.find({
+            "$or": [
+                {"title": Regex(query, "i")},
+                {"createdBy": {"$in": user_ids}}
+            ]
+        })
+    else:
+        todos = db.todos.find({
+            "$and": [
+                {"title": Regex(query, "i")},
+                {"createdBy": ObjectId(user_id)}
+            ]
+        })
+
+    return json.loads(dumps(todos))
