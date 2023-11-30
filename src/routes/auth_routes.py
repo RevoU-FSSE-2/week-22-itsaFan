@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, make_response
 from extensions import bcrypt
 from db_config import db
-from services.user_services import create_user, find_user_by_username, create_access_token, create_refresh_token
+from services.user_services import create_user, find_user_by_username, create_access_token, create_refresh_token, verify_refresh_token, generate_access_token
 import datetime
 from helpers.permission_helpers import get_role_name
 
@@ -42,3 +42,30 @@ def login():
         return response
 
     return jsonify({"msg": "Invalid username or password"}), 401
+
+
+@auth_bp.route('/logout', methods=['POST'])
+def logout():
+
+    response = make_response(jsonify({"message": "Logged out successfully"}))
+    response.delete_cookie('steffToken')
+    return response
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+def refresh_token():
+    try:
+        refresh_token = request.cookies.get('steffToken')
+        if not refresh_token:
+            return jsonify({"message": "Refresh token is required"}), 401
+
+        user_payload = verify_refresh_token(refresh_token)
+        if not user_payload:
+            return jsonify({"message": "Invalid or expired refresh token"}), 403
+
+        new_access_token = generate_access_token(user_payload['userId'], user_payload['username'], user_payload['email'], user_payload['role'])
+        return jsonify({"accessToken": new_access_token})
+
+    except Exception as e:
+        print("Internal server error:", e)
+        return jsonify({"message": "Internal Server error"}), 500

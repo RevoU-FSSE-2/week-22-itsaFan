@@ -62,3 +62,22 @@ def is_user_authorized():
         return False
 
     return current_user.get('role') == 'ROLE_ADMIN'
+
+def verify_refresh_token(refresh_token):
+    try:
+        payload = jwt.decode(refresh_token, Config.REFRESH_SECRET, algorithms=["HS256"])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None 
+    except jwt.InvalidTokenError:
+        return None 
+    
+def generate_access_token(user_id, username,email, role):
+    new_payload = {
+        "userId": user_id,
+        "username": username,
+        "email": email,
+        "role": role,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+    }
+    return jwt.encode(new_payload, Config.ACCESS_SECRET, algorithm="HS256")
