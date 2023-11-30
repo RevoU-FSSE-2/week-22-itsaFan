@@ -38,7 +38,7 @@ def login():
         refresh_token = create_refresh_token(user_data, datetime.timedelta(days=7))
 
         response = make_response(jsonify(accessToken=access_token))
-        response.set_cookie('steffToken', refresh_token, max_age=7*24*60*60, httponly=False, secure=True, samesite="None")
+        response.set_cookie('steffToken', refresh_token, max_age=7*24*60*60, httponly=True, secure=True, samesite="None")
         return response
 
     return jsonify({"msg": "Invalid username or password"}), 401

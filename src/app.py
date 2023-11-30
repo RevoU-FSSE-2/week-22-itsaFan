@@ -15,7 +15,7 @@ from routes.todo_routes import todo_bp
 app = Flask(__name__)
 
 # Utils
-CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://localhost:5173"}}, methods=["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"])
+CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "https://steff-flask-todo.web.app"}}, methods=["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"])
 Talisman(app, force_https=False)
 bcrypt.init_app(app) 
 app.config.from_object(Config)
