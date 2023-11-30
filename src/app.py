@@ -6,12 +6,14 @@ from config import Config
 from extensions import bcrypt
 from db_config import db, mongo_client 
 from utils.seeding import seed_permissions
+from flask_cors import CORS
 # Routing
 from routes.auth_routes import auth_bp
 from routes.todo_routes import todo_bp
 
 app = Flask(__name__)
 # Utils
+CORS(app) 
 bcrypt.init_app(app) 
 app.config.from_object(Config)
 

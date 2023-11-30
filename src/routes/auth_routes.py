@@ -22,7 +22,7 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    username = request.json.get('username')
+    username = request.json.get('identifier')
     password = request.json.get('password')
     user = find_user_by_username(db, username)
 

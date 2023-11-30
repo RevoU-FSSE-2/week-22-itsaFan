@@ -11,6 +11,7 @@ pyjwt = "*"
 python-dotenv = "*"
 pymongo = "*"
 flask-caching = "*"
+flask-cors = "*"
 
 [dev-packages]
 
