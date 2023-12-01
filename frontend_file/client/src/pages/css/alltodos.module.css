@@ -1,0 +1,15 @@
+.container {
+  margin: 0 22rem 0 22rem;
+}
+
+@media (max-width: 1700px) {
+  .container {
+    margin: 0 6rem 0 6rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .container {
+    margin: 0;
+  }
+}

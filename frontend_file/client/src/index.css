@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+  }
+
+
+  body {
+    /* transition: background-color 0.3s ease; */
+    background-color: #FFF; 
+  }
+  
+  /* body.dark {
+    background-color: #242629; 
+  } */
