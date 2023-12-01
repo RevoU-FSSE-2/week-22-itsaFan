@@ -78,7 +78,12 @@ The purpose of this assignment is to convert the existing todolist backend/expre
 #### Website Link: [Client](https://steff-flask-todo.web.app/)
 
 #### Screenshots
-
-
+![Alt text](readme_ss/image.png)
+![Alt text](readme_ss/image-1.png)
+![Alt text](readme_ss/image-2.png)
+![Alt text](readme_ss/image-3.png)
+![Alt text](readme_ss/image-5.png)
+![Alt text](readme_ss/image-4.png)
+![Alt text](readme_ss/image-6.png)
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/DGzh2WKs)
