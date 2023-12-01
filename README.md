@@ -66,11 +66,19 @@ The purpose of this assignment is to convert the existing todolist backend/expre
 | /api/todo/add      | Add Own Todo       | POST  | title, description, priority[enum:low,medium,high,notSet], deadline                 |
 | /api/todo/me     | View own created todo  | GET  | -          |
 | /api/todo/all   | Admin only endpoint, view all todo | GET  |-          |
-| /api/todo/search    | Search todo by title if admin can search author also       | GET   |params 'q'                      |
+| /api/todo/search?q=example    | Search todo by title if admin can search author also       | GET   |params 'q'                      |
 | /api/todo/delete/:todoId  | Delete todo by Id       | DELETE  |- |
 | /api/todo/edit/:todoId  | Edit Todo by Id       | PUT  |title, description, priority[enum:low,medium,high,notSet], deadline     |
 | /api/logout  | Logout      | POST  |- |
 | /api/refresh  | Refresh Token to Generate New Access Token if Expired        | POST  |- |
+
+
+### Deployment && Screenshots
+**Notes: this project is deployed using Firebase for the Frontend and GCP Cloud Run for the Backend**<br>
+#### Website Link: [Client](https://steff-flask-todo.web.app/)
+
+#### Screenshots
+
 
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/DGzh2WKs)
