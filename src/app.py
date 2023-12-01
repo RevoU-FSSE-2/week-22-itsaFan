@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -35,3 +36,8 @@ check_mongo_connection()
 # Routes
 app.register_blueprint(auth_bp, url_prefix='/api')
 app.register_blueprint(todo_bp, url_prefix='/api/todo')
+
+
+print("PORT env var:", os.environ.get("PORT"))
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000, debug=True)
